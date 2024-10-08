@@ -1,5 +1,5 @@
 <template>
   <div id="app">
-    <!-- <ReignsSwiper /> -->
+    <ReignsSwiper />
   </div>
 </template>
