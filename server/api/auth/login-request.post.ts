@@ -1,28 +1,49 @@
-import { H3Event } from "h3";
+import type { H3Event } from "h3";
 import User from "~/server/models/user.schema";
 import sgMail from "@sendgrid/mail";
 import crypto from "crypto";
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
 
 export default defineEventHandler(async (event: H3Event) => {
   const { email } = await readBody(event);
 
-  // Validate email domain
+  if (!email) {
+    throw createError({
+      statusCode: 400,
+      message: "Email is required",
+    });
+  }
+
+  // Basic email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw createError({
+      statusCode: 400,
+      message: "Please enter a valid email address.",
+    });
+  }
+
+  // Determine user type based on domain (optional, for analytics)
   const domain = email.split("@")[1];
-  let userType;
-  if (domain === "myseneca.ca") userType = "student";
-  else if (domain === "senecapolytechnic.ca") userType = "employee";
-  else if (domain === "senecagovernors.ca") userType = "governor";
-  else if (domain === "gammaspace.ca") userType = "gammaspace";
-  else userType = "tester";
-  // todo: reimplement domain restriction
-  // else {
-  //   throw createError({
-  //     statusCode: 400,
-  //     message: "Invalid email domain",
-  //   });
-  // }
+  let userType = "external"; // Default user type for non-specific users
+
+  // Optional: Still categorize specific users if needed for analytics
+  if (domain) {
+    switch (domain) {
+      case "myseneca.ca":
+        userType = "student";
+        break;
+      case "senecapolytechnic.ca":
+      case "senecacollege.ca":
+        userType = "employee";
+        break;
+      case "reelpolytechnic.com":
+        userType = "admin";
+        break;
+      // No default needed, userType remains 'external'
+    }
+  }
 
   // Find or create user
   let user = await User.findOne({ email });
@@ -46,7 +67,16 @@ export default defineEventHandler(async (event: H3Event) => {
     html: `<p>Click <a href="${loginUrl}">here</a> to log in to Reel Polytechnic.</p>`,
   };
 
-  await sgMail.send(msg);
+  try {
+    await sgMail.send(msg);
+    // Email sent successfully
+  } catch (error) {
+    console.error(error);
+    throw createError({
+      statusCode: 500,
+      message: "Failed to send login email. Please try again later.",
+    });
+  }
 
   return { message: "Login link sent to your email" };
 });

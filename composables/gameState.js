@@ -2,7 +2,7 @@ import { ref, computed } from "vue";
 import scenariosData from "../data/scenarios";
 
 const gameStarted = ref(false);
-const isRecapMode = ref(false);
+
 const gameOver = ref(false);
 const allScenarios = ref(scenariosData);
 const gameSequence = ref([]);
@@ -48,7 +48,6 @@ const resetGame = () => {
     score: 0,
   };
   scenarios.value = randomizeScenarios();
-  isRecapMode.value = false;
   gameOver.value = false;
 };
 
@@ -75,23 +74,39 @@ const initializeGame = async () => {
     return;
   }
 
-  // Find scenario 4
+  const scenarioOne = allScenarios.value.find((s) => s.id === 1);
   const scenarioFour = allScenarios.value.find((s) => s.id === 4);
+  const randomScenario12or14 = shuffleArray(
+    allScenarios.value.filter((s) => s.id === 12 || s.id === 14)
+  )[0];
+  const randomMfaScenario = shuffleArray(
+    allScenarios.value.filter((s) => s.id >= 17 && s.id <= 20)
+  )[0];
+  const randomNonMfaScenario = shuffleArray(
+    allScenarios.value.filter(
+      (s) =>
+        s.scenarioType !== "mfa" &&
+        s.id !== 1 &&
+        s.id !== 4 &&
+        s.id !== 11 &&
+        s.id !== 12 &&
+        s.id !== 13 &&
+        s.id !== 14
+    )
+  )[0];
 
   await preloadScenarioAssets(tutorialScenario.value);
 
-  const shuffledRegularScenarios = shuffleArray(
-    regularScenarios.value.filter((s) => s.id !== 4) // Exclude scenario 4 from shuffle
-  );
-
   gameSequence.value = [
-    tutorialScenario.value,
+    scenarioOne,
     scenarioFour,
-    ...shuffledRegularScenarios,
+    randomScenario12or14,
+    randomMfaScenario,
+    randomNonMfaScenario,
   ];
 
   console.log(
-    "Game initialized with tutorial, scenario 4, and shuffled regular scenarios:",
+    "Game initialized with 5 curated scenarios:",
     gameSequence.value.map((s) => s.id)
   );
 };
@@ -256,11 +271,7 @@ const userChoices = ref({});
 
 const isEndingScenario = ref(false);
 
-const startRecap = () => {
-  isEndingScenario.value = false;
-  isRecapMode.value = true;
-  setGameStage("recap");
-};
+
 
 const isLastCardOfScenario = computed(() => {
   return (
@@ -285,7 +296,6 @@ const jumpToScenario = (scenarioId) => {
 };
 const setGameOver = (value) => {
   gameOver.value = value;
-  isRecapMode.value = false;
   isEndingScenario.value = false;
   isTransitionCardVisible.value = false;
   if (value) {
@@ -400,8 +410,9 @@ const completeCurrentScenario = async () => {
     currentScenarioIndex.value === gameSequence.value.length - 1;
 
   if (isLastMainScenario) {
-    console.log("Last main scenario completed. Ready for ending.");
+    console.log("Last main scenario completed. Starting recap.");
     isTransitionCardVisible.value = true;
+    moveToNextStage(); // Start recap
   } else {
     // Move to the next scenario
     moveToNextScenario();
@@ -427,13 +438,9 @@ const moveToNextScenario = () => {
 const moveToNextStage = () => {
   isTransitionCardVisible.value = false;
   if (gameStage.value === "main") {
-    console.log("Moving to ending stage");
-    gameStage.value = "ending";
-    moveToEndingStage();
-  } else if (gameStage.value === "ending") {
-    console.log("Moving to recap stage");
-    startRecap();
-  } else if (gameStage.value === "recap") {
+    console.log("Main scenarios completed. Moving directly to game over.");
+    setGameOver(true);
+  } else {
     console.log("Moving to game over");
     setGameOver(true);
   }
@@ -477,7 +484,6 @@ export function useGameState() {
     isEndingScenario,
     isLastCardOfScenario,
     isLastRegularScenario,
-    isRecapMode,
     jumpToScenario,
     jumpToScenarioById,
     loadingProgress,
@@ -496,7 +502,6 @@ export function useGameState() {
     setGameOver,
     setGameStage,
     startGame,
-    startRecap,
     tutorialScenario,
     userChoices,
     isTransitionCardVisible,

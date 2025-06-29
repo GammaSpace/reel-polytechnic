@@ -7,9 +7,11 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@nuxt/eslint": "^0.5.7",
     "@nuxt/image": "^1.8.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
@@ -20,13 +22,16 @@
     "marked": "^14.1.2",
     "mongoose": "^8.6.1",
     "nuxt": "^3.13.1",
-    "nuxt-auth-utils": "^0.3.7",
+    "nuxt-auth-utils": "^0.5.20",
     "swiper": "^11.1.12",
     "vue": "^3.5.4",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
-    "sass": "^1.78.0"
+    "@nuxt/eslint-config": "^0.5.7",
+    "eslint": "^9.12.0",
+    "sass": "^1.78.0",
+    "typescript": "^5.6.3"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

@@ -783,7 +783,7 @@ export default [
     id: 5,
     scenarioType: "regular",
     learningObjectives:
-      "Always double-check a website's legtitimacy \nbefore entering info - don't get caught by scams!",
+      "Always double-check a website's legitimacy \nbefore entering info - don't get caught by scams!",
     cards: [
       {
         id: 5,
@@ -1183,7 +1183,7 @@ export default [
     id: 7,
     scenarioType: "regular",
     learningObjectives:
-      "Always double-check a website's legtitimacy \nbefore entering info - don't get caught by scams!",
+      "Always double-check a website's legitimacy \nbefore entering info - don't get caught by scams!",
     cards: [
       {
         id: 7,

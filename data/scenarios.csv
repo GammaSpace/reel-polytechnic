@@ -45,7 +45,7 @@ the request!",,,,,,,,,,,,,,,,,,,,,,,
 5,story,,,6,There's a post about it! Let's read on...,Keep looking…,Okay...,/images/5-6.jpg,,,,,,,,,,,,,,,,,,
 5,decision,,,7,Is this a trusted source for this information?,I believe it,This is fake!,/images/5-7.jpg,1,"Sounds like you'll have to go somewhere else for Advanced Salad options, but the new features sound great.",,"Unfortunately the doors are locked. Looks like you better be looking for refreshments elsewhere. \n\n With features like these, this will take months to complete.",scenario-05.md,,,,,,,,,,,,,
 5,reveal,,,8,,I see,Got it,/images/5-reveal.jpg,,,,,,,,,,,,,,,,,,
-5,scenario,regular,"Always double-check a website's legtitimacy 
+5,scenario,regular,"Always double-check a website's legitimacy 
 before entering info - don't get caught by scams!",,,,,,,,,,,,,,,,,,,,,,,
 6,story,,,1,"You're enjoying your morning outside, daydreaming about your next visit to The Pond when it reopens when Beejou flies by.",Relax and wait...,Nice clouds,/images/6-1.jpg,,,,,,,,,,,,,,,,,,
 6,story,,,2,Did you see the posters? We're hosting a Four-Armed Basketball tournament!,Tell me more!,What!,/images/6-2.jpg,,,,,,,,,,,,,,,,,,
@@ -66,7 +66,7 @@ before entering info - don't get caught by scams!",,,,,,,,,,,,,,,,,,,,,,,
 7,story,,,7,"Next, we're going to look at the webpage.",Keep looking…,Okay...,/images/7-7.jpg,,,,,,,,,,,,,,,,,,
 7,decision,,,8,Should Beejou trust the site?,Yes! Let's get tickets!,Maybe we shouldn't,/images/7-8.jpg,1,"You and Beejou get front row tickets. Beejou's so excited, she says she wont sleep for weeks.",,"Sounds worrying so you decide not to go. \n\n But you can't help but wonder if concert will be one of those life changing, world altering one that everyone won't stop talking about for weeks...",scenario-07.md,,,,,,,,,,,,,
 7,reveal,,,9,,I see,Got it,/images/7-reveal.jpg,,,,,,,,,,,,,,,,,,
-7,scenario,regular,"Always double-check a website's legtitimacy 
+7,scenario,regular,"Always double-check a website's legitimacy 
 before entering info - don't get caught by scams!",,,,,,,,,,,,,,,,,,,,,,,
 8,story,,,1,You're the only one at the lounge this morning. You can't wait until The Pond reopens for morning coffee!,Enjoy the quiet…,Enjoy the quiet!,/images/8-1.jpg,,,,,,,,,,,,,,,,,,
 8,story,,,2,Ah! Oh! I'm so glad you're here!,Did something happen?,Hey Beejou!,/images/8-2.jpg,,,,,,,,,,,,,,,,,,

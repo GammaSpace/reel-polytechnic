@@ -23,11 +23,22 @@ export default defineNuxtConfig({
     },
   },
   modules: [
-    "@nuxtjs/tailwindcss",
     "nuxt-auth-utils",
     "@nuxtjs/google-fonts",
     "@nuxt/image",
+    "@nuxtjs/tailwindcss",
   ],
+  auth: {
+    baseURL: process.env.BASE_URL || "http://localhost:3001",
+    provider: {
+      type: "local",
+      endpoints: {
+        signIn: { path: "/api/auth/login-request", method: "post" },
+        signOut: { path: "/api/auth/logout", method: "post" },
+        session: { path: "/api/auth/verify", method: "get" },
+      },
+    },
+  },
   googleFonts: {
     download: false,
     families: {
