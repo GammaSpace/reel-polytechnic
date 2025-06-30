@@ -62,9 +62,34 @@ export default defineEventHandler(async (event: H3Event) => {
   const msg = {
     to: email,
     from: "noreply@reelpolytechnic.com",
-    subject: "Your Reel Polytechnic Login Link",
-    text: `Click this link to log in: ${loginUrl}`,
-    html: `<p>Click <a href="${loginUrl}">here</a> to log in to Reel Polytechnic.</p>`,
+    subject: "Your Security Awareness Online Game Login Link",
+    text: `You're receiving this email because you signed up to participate in Seneca Polytechnic's Security Awareness Online Game. If you did not sign up for this game, please disregard this email.\n\nPlease click this link to start the game: ${loginUrl}\n\nThis link can only be used once, so if you are asked to register again, you'll need to request a new link.\n\nPlease note: the security awareness game will track your scores and participation. You will never be asked to enter any other personal information.`,
+    html: `
+      <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; line-height: 1.6;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <img src="${process.env.BASE_URL}/images/reelPolytechnicLogo.png" alt="Reel Polytechnic" style="max-width: 200px;">
+          <h2 style="color: #EE3124; margin: 10px 0 5px;">REEL POLYTECHNIC</h2>
+          <p style="color: #EE3124; margin: 0;">Security Awareness Online Game</p>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <p>You're receiving this email because you signed up to participate in <span style="background-color: #ffeb3b;">Seneca</span> <span style="color: #6C63FF;">Polytechnic's Security Awareness Online Game</span>. If you did <em>not</em> sign up for this game, please disregard this email.</p>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <p>Please click on the button below to start the game. <strong>This link can only be used once, so if you are asked to register again, you'll need to request a new link.</strong></p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+          <a href="${loginUrl}" style="display: inline-block; background-color: #EE3124; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Launch Game</a>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <p>Please note: the security awareness game will track your scores and participation. <strong>You will never be asked to enter any other personal information.</strong></p>
+        </div>
+
+      </div>
+    `,
   };
 
   try {
