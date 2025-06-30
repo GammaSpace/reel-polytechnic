@@ -1044,6 +1044,8 @@ const initializeSwiper = async () => {
 onMounted(async () => {
   if (gameStarted.value) {
     initializeGame();
+    // Preload ALL scenarios at once
+    await preloadAllScenarios();
     await initializeSwiper();
   }
   if (flipTimeout.value) {
@@ -1454,12 +1456,144 @@ const isCorrect = (scenario) => {
   return choice.scoreChange > 0;
 };
 
-function getCardImage(card, isFront) {
-  if (card.type === "reveal" && isFront) {
-    return "/images/card-back.jpg";
+const preloadedImages = ref(new Set());
+const imageLoadingPromises = ref(new Map());
+
+// Add preload function
+const preloadImage = (url) => {
+  if (!url || preloadedImages.value.has(url)) return Promise.resolve();
+
+  if (imageLoadingPromises.value.has(url)) {
+    return imageLoadingPromises.value.get(url);
   }
-  return card.image;
+
+  const promise = new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      preloadedImages.value.add(url);
+      imageLoadingPromises.value.delete(url);
+      resolve();
+    };
+    img.onerror = () => {
+      imageLoadingPromises.value.delete(url);
+      reject();
+    };
+    img.src = url;
+  });
+
+  imageLoadingPromises.value.set(url, promise);
+  return promise;
+};
+
+// Preload current and next scenario images
+const preloadScenarioImages = async (scenario) => {
+  if (!scenario?.cards) return;
+
+  const imagesToPreload = scenario.cards
+    .map((card) => {
+      if (card.type === "reveal") {
+        return [getCardImage(card, true), getCardImage(card, false)];
+      }
+      return [getCardImage(card, true)];
+    })
+    .flat();
+
+  await Promise.all(imagesToPreload.map(preloadImage));
+};
+
+// Preload next scenarios
+const preloadUpcomingScenarios = async () => {
+  const currentIndex = currentScenarioIndex.value;
+  const scenariosToPreload = gameSequence.value.slice(
+    currentIndex,
+    currentIndex + 2
+  );
+
+  for (const scenarioId of scenariosToPreload) {
+    const scenario = scenarios.value.find((s) => s.id === scenarioId);
+    if (scenario) {
+      await preloadScenarioImages(scenario);
+    }
+  }
+};
+
+// Modify watch handlers
+watch(
+  currentScenario,
+  async (newScenario) => {
+    if (newScenario) {
+      isScenarioTransitioning.value = true;
+      try {
+        await preloadScenarioImages(newScenario);
+        // Also preload next scenarios in background
+        preloadUpcomingScenarios();
+      } finally {
+        isScenarioTransitioning.value = false;
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// Modify getCardImage to use cached images
+function getCardImage(card, isFront) {
+  let imageUrl;
+  if (card.type === "reveal" && isFront) {
+    imageUrl = "/images/card-back.jpg";
+  } else {
+    imageUrl = card.image;
+  }
+  // Trigger preload but don't wait for it
+  if (imageUrl) preloadImage(imageUrl);
+  return imageUrl;
 }
+
+// Add after the existing preload functions
+const preloadAllScenarios = async () => {
+  console.log("Starting to preload all scenario images...");
+  isScenarioTransitioning.value = true;
+
+  try {
+    // Preload all scenarios in the game sequence
+    for (const scenarioId of gameSequence.value) {
+      const scenario = scenarios.value.find((s) => s.id === scenarioId);
+      if (scenario) {
+        await preloadScenarioImages(scenario);
+      }
+    }
+    console.log("All scenario images preloaded successfully");
+  } catch (error) {
+    console.error("Error preloading scenario images:", error);
+  } finally {
+    isScenarioTransitioning.value = false;
+  }
+};
+
+// Also watch gameStarted to handle when user starts the game
+watch(gameStarted, async (started) => {
+  if (started) {
+    // Preload all scenarios when game starts
+    await preloadAllScenarios();
+  }
+});
+
+// Remove the preloadUpcomingScenarios calls since we're loading everything at once
+watch(
+  currentScenario,
+  async (newScenario) => {
+    if (newScenario) {
+      // Keep transition state management but don't reload images
+      isScenarioTransitioning.value = true;
+      try {
+        // Images should already be preloaded, just wait a brief moment for transition
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      } finally {
+        isScenarioTransitioning.value = false;
+      }
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style>
