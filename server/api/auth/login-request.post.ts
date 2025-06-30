@@ -26,7 +26,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   // Determine user type based on domain (optional, for analytics)
   const domain = email.split("@")[1];
-  let userType = "external"; // Default user type for non-specific users
+  let userType = "player"; // Default user type for non-specific users
 
   // Optional: Still categorize specific users if needed for analytics
   if (domain) {
@@ -39,9 +39,9 @@ export default defineEventHandler(async (event: H3Event) => {
         userType = "employee";
         break;
       case "reelpolytechnic.com":
-        userType = "admin";
+        userType = "employee";
         break;
-      // No default needed, userType remains 'external'
+      // No default needed, userType remains 'player'
     }
   }
 
@@ -56,9 +56,35 @@ export default defineEventHandler(async (event: H3Event) => {
   const token = crypto.randomBytes(32).toString("hex");
   await setUserSession(event, { loginToken: token, email });
 
-  // Send email
-  const loginUrl = `${process.env.BASE_URL}/api/auth/verify?token=${token}`;
+  // Get request information for URL construction
+  const headers = getRequestHeaders(event);
+  const requestURL = getRequestURL(event);
 
+  // Debug logging for URL construction
+  console.error("Debug - Request headers:", {
+    origin: headers.origin,
+    host: headers.host,
+    proto: headers["x-forwarded-proto"],
+    referer: headers.referer,
+  });
+  console.error("Debug - Request URL:", requestURL.toString());
+
+  // Force local development URL when running locally
+  const isLocalDev = process.env.NODE_ENV === "development";
+  const origin = isLocalDev
+    ? "http://localhost:3000" // reel-polytechnic runs on port 3000
+    : requestURL.origin !== "null"
+    ? requestURL.origin
+    : headers.origin ||
+      `${headers["x-forwarded-proto"] || "http"}://${headers.host}`;
+
+  console.error("Debug - Using origin:", origin);
+
+  // Construct login URL using the request origin
+  const loginUrl = `${origin}/api/auth/verify?token=${token}`;
+  console.error("Debug - Final login URL:", loginUrl);
+
+  // Send email
   const msg = {
     to: email,
     from: "noreply@reelpolytechnic.com",
@@ -67,7 +93,7 @@ export default defineEventHandler(async (event: H3Event) => {
     html: `
       <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; line-height: 1.6;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <img src="${process.env.BASE_URL}/images/reelPolytechnicLogo.png" alt="Reel Polytechnic" style="max-width: 200px;">
+          <img src="${origin}/images/reelPolytechnicLogo.png" alt="Reel Polytechnic" style="max-width: 200px;">
           <h2 style="color: #EE3124; margin: 10px 0 5px;">REEL POLYTECHNIC</h2>
           <p style="color: #EE3124; margin: 0;">Security Awareness Online Game</p>
         </div>
@@ -81,7 +107,7 @@ export default defineEventHandler(async (event: H3Event) => {
         </div>
 
         <div style="text-align: center; margin-bottom: 30px;">
-          <a href="${loginUrl}" style="display: inline-block; background-color: #EE3124; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Launch Game</a>
+          <a href="${loginUrl}" style="display: inline-block; background-color: #EE3124; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Start Game</a>
         </div>
 
         <div style="margin-bottom: 30px;">

@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
   },
@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
   ],
   auth: {
-    baseURL: process.env.BASE_URL || "http://localhost:3001",
+    baseURL: process.env.BASE_URL || "http://localhost:3000",
     provider: {
       type: "local",
       endpoints: {
