@@ -29,7 +29,11 @@
           </p>
 
           <button
-            @click="startGame"
+            @click="
+              async () => {
+                await startGame();
+              }
+            "
             class="bg-blue-200 text-zinc-800 rounded-full px-12 py-3 text-lg font-semibold hover:bg-blue-300 transition-colors mb-4">
             Start Game
           </button>
@@ -123,6 +127,6 @@ onMounted(async () => {
 // Computed property for bestScore percentage
 const bestScorePercentage = computed(() => {
   const user = useUserSession().user;
-  return user.value.bestScore > 0 ? (user.value.bestScore / 20) * 100 : 0;
+  return user.value.bestScore > 0 ? (user.value.bestScore / 5) * 100 : 0;
 });
 </script>

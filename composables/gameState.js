@@ -376,11 +376,12 @@ function previousCard() {
   return false;
 }
 
-const startGame = () => {
+const startGame = async () => {
+  await initializeGame();
   gameStarted.value = true;
   currentScenarioIndex.value = 0;
   currentCardIndex.value = 0;
-  // Additional logic to begin the first scenario, if needed
+  setGameStage("main");
 };
 
 const setGameStage = (stage) => {
