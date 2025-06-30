@@ -164,57 +164,15 @@
 
                     <!-- Enhanced full-height trust/distrust labels -->
                     <div
-                      class="absolute inset-0 w-full h-full flex items-center justify-center text-center z-20 transition-all duration-300 swiper-tinder-label swiper-tinder-label-no pointer-events-none transform scale-105"
+                      class="text-right absolute top-0 left-0 w-full px-3 py-8 text-lg font-bold z-20 rounded-t-xl rounded-b-none transition-opacity duration-300 bg-red-500 bg-opacity-70 text-white swiper-tinder-label swiper-tinder-label-no pointer-events-none"
                       data-swiper-parallax="-300"
                       data-swiper-parallax-duration="600"
-                      style="
-                        background: linear-gradient(
-                          135deg,
-                          rgba(239, 68, 68, 0.9),
-                          rgba(185, 28, 28, 0.9)
-                        );
-                        backdrop-filter: blur(2px);
-                      ">
-                      <div
-                        class="flex flex-col items-center space-y-2 md:space-y-4">
-                        <div
-                          class="text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-wider drop-shadow-2xl animate-bounce-slow">
-                          👎
-                        </div>
-                        <div
-                          class="text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-wider drop-shadow-2xl text-white"
-                          style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8)"
-                          v-html="card.distrustLabel || 'DISTRUST'"></div>
-                        <div
-                          class="w-20 h-1 bg-white rounded-full opacity-75 shadow-lg"></div>
-                      </div>
-                    </div>
+                      v-html="card.distrustLabel || 'Distrust'" />
                     <div
-                      class="absolute inset-0 w-full h-full flex items-center justify-center text-center z-20 transition-all duration-300 swiper-tinder-label swiper-tinder-label-yes pointer-events-none transform scale-105"
+                      class="absolute top-0 right-0 w-full px-3 py-8 text-lg font-bold z-20 rounded-t-xl rounded-b-none transition-opacity duration-300 bg-green-500 bg-opacity-70 text-white swiper-tinder-label swiper-tinder-label-yes pointer-events-none"
                       data-swiper-parallax="-300"
                       data-swiper-parallax-duration="600"
-                      style="
-                        background: linear-gradient(
-                          135deg,
-                          rgba(34, 197, 94, 0.9),
-                          rgba(21, 128, 61, 0.9)
-                        );
-                        backdrop-filter: blur(2px);
-                      ">
-                      <div
-                        class="flex flex-col items-center space-y-2 md:space-y-4">
-                        <div
-                          class="text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-wider drop-shadow-2xl animate-bounce-slow">
-                          👍
-                        </div>
-                        <div
-                          class="text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-wider drop-shadow-2xl text-white"
-                          style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8)"
-                          v-html="card.trustLabel || 'TRUST'"></div>
-                        <div
-                          class="w-20 h-1 bg-white rounded-full opacity-75 shadow-lg"></div>
-                      </div>
-                    </div>
+                      v-html="card.trustLabel || 'Trust'" />
                   </div>
                 </div>
                 <!-- Back face (reveal card) -->
